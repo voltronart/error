@@ -21,9 +21,23 @@ var ballmat = [];
 
 var navios = [];
 
+var boatanim = [];
+
+var boatdata 
+
+var boatsprite
+
+var  brokenboatanim = [];
+var brokenboatdata
+var brokenboatsprite
+
 function preload() {
   backgroundImg = loadImage("assets/background.gif");
   towerImg = loadImage("assets/tower.png");
+  boatdata = loadJSON('assets/boat/boat.json');
+  boatsprite = loadImage('assets/boat/boat.png');
+  brokenboatdata = loadJSON('assets/boat/broken_boat.json');
+  brokenboatsprite = loadImage('assets/boat/broken_boat.png');
 }
 
 function setup() {
@@ -46,8 +60,28 @@ function setup() {
  angleMode(DEGREES);
  angle = 20
  cannon = new Cannon(180,110,130,100,angle);
-  
+
+ var boatframes = boatdata.frames
+ 
+ for(var i = 0;i<boatframes.length;i++){
+    var pos = boatframes[i].position
+    var img = boatsprite.get(pos.x,pos.y,pos.w,pos.h);
+    boatanim.push(img);
+
+ }
+ var brokenboatframes = brokenboatdata.frames
+ for(var i = 0;i<brokenboatframes.length;i++){
+  var pos = brokenboatframes[i].position
+  var img = brokenboatsprite.get(pos.x,pos.y,pos.w,pos.h);
+  brokenboatanim.push(img);
+
 }
+
+
+}
+
+
+
 
 function draw() {
   background(190);
@@ -65,7 +99,7 @@ function draw() {
   pop()
  
   cannon.display();
-  showboat() 
+  showboat(); 
  for(var i = 0;i<ballmat.length;i++){
    showcannonball(ballmat[i],i);
    colissionboat(i)
@@ -105,17 +139,20 @@ function showboat(){
    if(navios.length<4&&navios[navios.length-1].body.position.x<width-300){
      var position = [-40,-70,-80,-60]
      var positions = random(position)
-     var navio = new Navio(width,height-100,170,170,positions)
+     var navio = new Navio(width,height-100,170,170,positions,boatanim)
      navios.push(navio);
      
 
+    
     }
     for(var i = 0;i<navios.length;i++){
-         Matter.Body.setVelocity(navios[i].body,{x:-0.9,y:0})
-         navios[i].display();
-    }
+          Matter.Body.setVelocity(navios[i].body,{x:-0.9,y:0})
+          navios[i].display();
+          navios[i].animate();
+        }       
+                 
  }else{
- var navio = new Navio(width,height-60,170,170,-60);
+ var navio = new Navio(width,height-60,170,170,-60,boatanim);
  navios.push(navio);
  
 
